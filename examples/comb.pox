@@ -1,0 +1,7 @@
+operator C:
+	nf=left!
+	rf=right!
+	lff = (left-right)!
+	print nf/(lff*rf)
+
+print 5 C 2
