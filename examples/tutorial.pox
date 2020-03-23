@@ -1,0 +1,160 @@
+# Inspired From https://www.w3schools.com/python/default.asp
+#-------------------------------------------
+#    T U T O R I A L 
+#-------------------------------------------
+
+# E V E R Y   N O N - C O M M E N T E D   L I N E   O F   C O D E   W O R K S   T O T A L L Y   F I N E 
+
+# First is obviusly
+print "Hello World"
+
+
+#------------------
+#    COMMENTS
+#------------------
+
+# THIS IS A COMMENT 
+
+
+
+
+#------------------
+#    INDENTION
+#------------------
+# Indention is just like python nothing different
+if 5 > 2:
+	print "Five is greater than two!"
+
+# This wont work like it does in python
+# if 5 > 2:print "Five is greater than two!"
+
+
+
+
+#------------------
+#    VARIABLES
+#------------------
+# There are two types 
+# 1 -> "STRING"
+# 2 -> "NUMBER" (int,float,double) is alloted dynamically
+# 3 -> "ARRAYS"/"LIST"
+# 3 -> "BOOLEAN"
+x = 10 
+x = 10.9
+x = "Heyo!"
+x = True
+x = False
+
+# ARRAYS
+
+x = [1,2,3]
+x = 1,2,3,4,5,6
+
+# As Arrays start from 0
+print 0 th x # Prints 1
+print 1 st x # Prints 2
+print 2 nd x # Prints 3
+print 3 rd x # Prints 4
+print 4 th x # Prints 5
+
+# Length Operator
+print len x # Prints 6
+
+#------------------
+#    CASTING
+#------------------
+
+x = "10"
+print num x + 10 # Outputs 20
+
+y = 20
+print "String:"+str y 
+
+# Every Non Zero value is True
+bool True # True
+bool 20 # True
+bool 0 # False
+bool "False" # Even this is True 
+# However
+bool False # is False 
+
+
+
+
+#------------------
+#    IF
+#    MATCH----WHEN
+#    WHILE
+#------------------
+x = 10
+
+# Normal If Statement
+# Else, ElseIf is not supported under current versions
+if x>9:
+	print("Hey")
+
+
+# Normal If Statement
+# Else, ElseIf is not supported under current versions
+while x<20:
+	x = x+1
+
+# Match....When Statements
+# Works like switch case in C
+	
+y = 11
+match y:
+	when 10:
+		print("Equal to 10")
+	#when 11:
+	#	print("Equal to 11")
+
+
+
+#------------------
+#    OPERATORS
+#------------------
+
+# In Proxima Everything is considered as an Operator 
+# You Cant Create Functions 
+# But You can Create Operators
+
+# All Operators operate according to the priority order as Given Below
+
+# O P E R A T O R S
+# |-USER DEFINED OPERATORS
+# |
+# |-IN-BUILT OPERATORS
+#     |-- Type Casting Operators i.e. num,str,bool
+#     |-- All Mathematical Operators i.e. +,-,*,/,%,**, ! <-(factorial operator)
+#     |-- Boolean Operators i.e. ==,!=,>,>=,<,<=
+#     |-- Array Addressing Operators i.e. st,nd,rd,th,len
+#     |-- Comparison Operators i.e. ==,!=,>=,<=,>,<
+#     |-- Logical Operators i.e. and,or,not
+#     |-- Seperation Operators i.e." , "(Comma)
+#     |-- Return Operators i.e.return used while defining operators
+#     |-- Seperation Operators i.e." , "(Comma)
+#     |-- Range Operators i.e. "to" 
+#     |-- Membership Operators i.e. "in"
+#     |-- I/O Operators i.e. print,input 
+#     |-- Asignment Operators i.e. = 
+#     |-- Block Operators i.e. ":" 
+#     |-- NewLine Operators i.e. "\n" 
+
+
+#------------------------------
+#    How To DEFINE OPERATORS
+#------------------------------
+
+# lets define a function to calculate nCr
+
+# Operator Definition
+operator C: # Defining an operator named "C"
+	n = left # Assign value of left Operand to n
+	r = right # Assign value of right Operand to r
+	return n!/((n-r)!*r!) # Return Calculated Value
+
+# Operator Call
+print 5 C 2 
+# Mind the spaces between 5 and C and 2
+# Interpreter wont understand 5C2  

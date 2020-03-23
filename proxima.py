@@ -3,8 +3,8 @@ import interpreter
 import sys
 
 
-version = '0.0.1'
-debug = True
+version = '0.0.2'
+debug = False
 
 
 

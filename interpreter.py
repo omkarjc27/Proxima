@@ -10,12 +10,23 @@ class Enviornment:
 		self.variables = {}
 
 class Block:
-	def __init__(self,tokens,end='DEDENT'):
+	def __init__(self,tokens):
+		#print("Tokens",tokens)
 		self.tokens = []
 		i=0
-		while i<len(tokens) and tokens[i][0] != end:
+		pending=1
+		while i<len(tokens):
+			if tokens[i][0]=='INDENT':
+				pending+=1
+			elif tokens[i][0]=='DEDENT':
+				if pending == 1:
+					break
+				else:
+					pending-=1
 			self.tokens.append(tokens[i])
 			i+=1
+		#print("NEW",self.tokens)
+		
 	def length(self):
 		return len(self.tokens)
 	
@@ -47,6 +58,18 @@ def eval_if(statement,block,env):
 	if eval_block(statement,env):
 		env.blocks[block].solve(env)
 
+def eval_when(statement,block,env):
+	if "__switch__" in env.variables:
+		if eval_block(statement,env) == env.variables["__switch__"]:
+			env.blocks[block].solve(env)
+	else:
+		raise ProximaError('Unexpected "when"',statement[0][2],statement[0][3]-1)
+
+def eval_match(statement,block,env):
+	env.variables["__switch__"]=eval_block(statement,env)
+	env.blocks[block].solve(env)
+	del env.variables["__switch__"]
+
 def store_oper(statement,block,env):
 	if len(statement) == 1:
 		env.user_def_operator[statement[0][1]] = block
@@ -55,30 +78,36 @@ def store_oper(statement,block,env):
 
 keys={
 	'while':eval_while,
-	 #'for':eval_for,
-	 'operator':store_oper,
+	#'for':eval_for,
+	'match':eval_match,
+	'when':eval_when,   
+	'operator':store_oper,
 	'if':eval_if,
 }
 
 def solve_operator(operator,left,right,env):
-	env.variables["left"]=left[0]
-	env.variables["right"]=right[0]
-	ind = env.user_def_operator[operator]
-	
-	env.blocks[env.user_def_operator[operator]].solve(env)
-	del env.variables["left"]
-	del env.variables["right"]
-	if "__return__" in env.variables :
-		ret = env.variables["__return__"]
-		del env.variables["__return__"]
+	local = Enviornment(operators)
+	local.user_def_operator = env.user_def_operator
+	local.variables["left"]=left[0]
+	local.variables["right"]=right[0]
+	#ind = env.user_def_operator[operator]
+	#print(local.variables)
+	env.blocks[env.user_def_operator[operator]].solve(local)
+	#print(local.variables)
+	if "__return__" in local.variables :
+		ret = local.variables["__return__"]
 		return ret
 
 
 def eval_operator(i,tokens,env):
 	operator = tokens[i]
-	print("operator",operator[1])
+	#print("operator",operator[1])
+	#print("left",tokens[:i])
+	#print("right",tokens[i+1:])
+			
 	if operator[0] == 'ASSIGN':
 		var = tokens[:i]
+		#print(var)
 		if len(var) != 1:
 			raise ProximaError("Illegal amount of variables being assigned",tokens[i][2],tokens[i][3])
 		else:
@@ -92,21 +121,23 @@ def eval_operator(i,tokens,env):
 		#print(tokens[1:i-1])
 		#try:
 		#print(tokens[0][1])
-		#print(tokens[1:i-1])
 		keys[tokens[0][1]](tokens[1:i-1],block,env)
 		
 		#except:
 		#	raise ProximaError("Error ",tokens[0][2],tokens[0][3])
 
-		i= i+l+3
+		i= i+l+2
 		if i<len(tokens):
-			#print(l,tokens[i:])
+			#print("statement",tokens[:i-1])
+			#print("remaining",tokens[i:])
 			eval_block(tokens[i+1:],env)
 	else:
 		#print("left")
+		#print(tokens[:i])
 		left = [eval_block(tokens[:i],env)]
 		#print(left)
 		#print("right")
+		#print(tokens[i+1:])
 		right = [eval_block(tokens[i+1:],env)]
 		#print(right)
 		if operator[1] != None and operator[1] in env.operators:
@@ -139,18 +170,28 @@ def eval_scope(tokens,i,env):
 		'LCBRACK':'RCBRACK',
 	}
 
+	#print("Tokens",tokens)
 	scope = []
-	end_c = end[tokens[i][0]]
+	start_c = tokens[i][0]
+	end_c = end[start_c]
 	i+=1
-	while i < len(tokens):
-		if tokens[i][0] != end_c:
-			scope.append(tokens[i])
-			i+=1
-		else:
+	pending = 1
+	while True:
+		if tokens[i][0] == end_c:
+			pending-=1
+		elif tokens[i][0] == start_c:
+			pending +=1
+
+		if pending==0:
 			break
+		scope.append(tokens[i])
+		i+=1
+	#print("Scope",scope)
+
 	if i > len(tokens):
 		raise ProximaError('Brackets not complete',tokens[i-1][2],tokens[i-1][3])
 	else:
+		#return eval_block(eval_block(scope,env)+eval_block(tokens[i:],env))
 		return eval_block(scope,env)
 
 def eval_name(tokens,i,env):
@@ -211,20 +252,16 @@ def eval_block(tokens,env):
 
 	def find_operator(tokens,env):
 		i = 0
-		bc = 0
 		op_list = []
 		bc_stk = Brackets()
 		while  i < len(tokens):
 			#print(tokens[i],is_operator(tokens[i],env))
-			if is_operator(tokens[i],env) and bc == 0:
+			if is_operator(tokens[i],env) and len(bc_stk.stk)==0:
 				op_list.append((i,tokens[i]))
 			elif tokens[i][0] == 'LPAREN' or tokens[i][0] == 'LBRACK' or tokens[i][0] == 'LCBRACK':
-				bc+=1
 				bc_stk.push(tokens[i][0])
 			elif tokens[i][0] == 'RPAREN' or tokens[i][0] == 'RBRACK' or tokens[i][0] == 'RCBRACK':
-				if bc_stk.pop(tokens[i][0]):
-					bc-=1
-				else:
+				if not bc_stk.pop(tokens[i][0]):
 					raise ProximaError('Extra Brackets "{}"'.format(tokens[i][1]),tokens[i][2],tokens[i][3])
 
 			i+=1
@@ -232,8 +269,9 @@ def eval_block(tokens,env):
 			return -1
 		else:
 			#print(op_list)
-			return top(op_list,env)
-
+			ret=top(op_list,env)
+			#print(ret)
+			return ret
 	#check if the operator is open
 	i = find_operator(tokens,env)
 	#if operator open evaluate
@@ -242,7 +280,7 @@ def eval_block(tokens,env):
 		return eval_operator(i,tokens,env)
 	# else iterate over each token
 	if len(tokens)>0:
-		#print('boss' in env.user_def_operator)
+		#print('No Operator in',tokens)
 		i = 0
 		return evaluators[tokens[i][0]](tokens,i,env)
 

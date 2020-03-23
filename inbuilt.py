@@ -4,8 +4,10 @@ def add(a,b,env):
 	return a[0]+b[0]
 
 def sub(a,b,env):
-	return a[0]-b[0]
-
+	if a[0]!=None:
+		return a[0]-b[0]
+	else:
+		return -b[0]
 def mul(a,b,env):
 	return a[0]*b[0]
 
@@ -51,8 +53,11 @@ def assign(a,b,env):
 def to(a,b,env):
 	return range(a[0],b[0]+1)
 
-def printing(a,b,env):
+def output(a,b,env):
 	print(b[0])
+
+def rinput(a,b,env):
+	return raw_input(b[0])
 
 def search(a,b,env):
 	return a[0] in b[0]
@@ -67,8 +72,10 @@ def retfn(a,b,env):
 	env.variables["__return__"]=b[0]
 
 def comma(a,b,env):
-	return a+b
-
+	if type(b[0]) == list:
+		return a+b[0]
+	else:
+		return a+b
 def fact(a,b,env):
 	def factorial(n):
 		if n <=1:return 1
@@ -76,12 +83,33 @@ def fact(a,b,env):
 	#print(a)
 	return factorial(a[0])
 
+def num(a,b,env):
+    try:
+        return int(b[0])
+    except ValueError:
+        return float(b[0])
+
+def string(a,b,env):
+	return str(b[0])
+
+def boolean(a,b,env):
+	return bool(b[0])
+
+def th(a,b,env):
+	#print(a,b)
+	return b[0][a[0]]
+
+def leng(a,b,env):
+	#print(a,b)
+	return len(b[0])
+
 operators = OrderedDict()
 operators[None]=None
 operators[":"]=colon
 
 operators["="]=assign
-operators["print"]=printing
+operators["print"]=output
+operators["input"]=rinput
 operators["in"]=search
 operators["to"]=to
 
@@ -99,6 +127,12 @@ operators["<"]=ls
 operators["=="]=eq
 operators["!="]=noteq
 
+operators["st"]=th
+operators["nd"]=th
+operators["rd"]=th
+operators["th"]=th
+operators["len"]=leng
+
 
 operators["+"]=add
 operators["-"]=sub
@@ -107,5 +141,7 @@ operators["*"]=mul
 operators["%"]=mod
 operators["!"]=fact
 operators["**"]=power
-operators["to_power"]=power
 
+operators["num"]=num
+operators["str"]=string
+operators["bool"]=boolean
