@@ -54,3 +54,4 @@ git clone This Repository
 cd Proxima
 python proxima.py /path/to/file/filename.pox 
 ```
+The Language is UnderDevelopment so if u get ant issues/errors report them [here](https://github.com/omkarjc27/Proxima/issues)
