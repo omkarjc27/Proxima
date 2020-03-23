@@ -1,7 +1,7 @@
 # Proxima
 Intentional Programming Language (Where u just specify the intention of the program)
 
-[![Under Construction](https://img.shields.io/badge/Status-UnderConstruction-yellow.svg)](https://shields.io/)
+[![Under Construction](https://img.shields.io/badge/Status-UnderConstruction-yellow.svg)]()
 
 ### Example
 
@@ -44,7 +44,7 @@ Output:-
 	> 10
 ```
 
-##### [See a small tutorial code](https://github.com/omkarjc27/Proxima/examples/tutorial.pox)
+##### [See a small tutorial code](examples/tutorial.pox)
 
 
 ### Installation & Usage
