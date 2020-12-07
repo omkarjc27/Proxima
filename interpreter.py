@@ -236,19 +236,20 @@ def eval_block(tokens,env):
 		return False
 
 	def top(op_list,env):
-		for operator in env.operators.iterkeys():
+		for operator in env.operators.keys():
 			for op in op_list:
 				#print(operator,op[1][1],operator==op[1][1])
 				if operator == op[1][1]:
 					#print(op,op_list)
 					return op[0] 
-		for operator in env.user_def_operator.iterkeys():
+		for operator in env.user_def_operator.keys():
 			for op in op_list:
 				#print(op_list)
 				#print(operator,op[1][1],operator==op[1][1])
 				if operator == op[1][1]:
 					#print(op,op_list)
-					return op[0] 
+					return op[0]
+		return -1
 
 	def find_operator(tokens,env):
 		i = 0
